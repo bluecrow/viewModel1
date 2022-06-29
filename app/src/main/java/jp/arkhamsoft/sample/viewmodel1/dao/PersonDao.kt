@@ -1,7 +1,7 @@
-package jp.arkhamsoft.sample.viewmodel1
+package jp.arkhamsoft.sample.viewmodel1.dao
 
 import androidx.room.*
-import jp.arkhamsoft.sample.viewmodel1.ui.main.Person
+import jp.arkhamsoft.sample.viewmodel1.domain.Person
 
 @Database(entities = [Person::class], version = 1, exportSchema = false)
 abstract class AppDatabase: RoomDatabase() {

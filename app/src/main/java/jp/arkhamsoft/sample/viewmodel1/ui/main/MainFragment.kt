@@ -12,7 +12,8 @@ import androidx.lifecycle.Observer
 import androidx.room.Room
 import jp.arkhamsoft.sample.viewmodel1.databinding.FragmentMainBinding
 import jp.arkhamsoft.sample.viewmodel1.R
-import jp.arkhamsoft.sample.viewmodel1.AppDatabase
+import jp.arkhamsoft.sample.viewmodel1.dao.AppDatabase
+import jp.arkhamsoft.sample.viewmodel1.domain.Person
 
 class MainFragment : Fragment() {
 
