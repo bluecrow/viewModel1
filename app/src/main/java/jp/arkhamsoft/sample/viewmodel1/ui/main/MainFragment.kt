@@ -1,17 +1,13 @@
 package jp.arkhamsoft.sample.viewmodel1.ui.main
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.DataBindingUtil
-import jp.arkhamsoft.sample.viewmodel1.databinding.FragmentMainBinding
-import jp.arkhamsoft.sample.viewmodel1.R
+import androidx.fragment.app.Fragment
 import jp.arkhamsoft.sample.viewmodel1.dao.AppDatabase
-import jp.arkhamsoft.sample.viewmodel1.dao.PersonDao
+import jp.arkhamsoft.sample.viewmodel1.databinding.FragmentMainBinding
 import jp.arkhamsoft.sample.viewmodel1.domain.Person
 
 class MainFragment : Fragment() {
@@ -23,11 +19,11 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-        binding = DataBindingUtil.setContentView(
-            requireActivity(), R.layout.fragment_main
-        )
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentMainBinding.inflate(inflater, container, false)
 
         val db = AppDatabase.getInstance(requireContext())
 
@@ -62,22 +58,26 @@ class MainFragment : Fragment() {
             if (myId.toString().isEmpty()) {
                 viewModel.add(newName.toString(), newMail.toString(), newAge.toString().toInt())
             } else {
-                val person = viewModel.getById(if (myId.toString().isEmpty()) 0 else myId.toString()?.toInt())
+                val person = viewModel.getById(
+                    if (myId.toString().isEmpty()) 0 else myId.toString()?.toInt()
+                )
                 if (person != null) {
                     person.name = newName.toString()
                     person.mail = newMail.toString()
                     person.age = newAge.toString().toInt()
                     viewModel.update(person)
-                    initInputField()
-                    viewModel.person.value = Person("", "", 0)
-                    binding.textView1.text = viewModel.allByText()
                 }
             }
+            binding.textView1.text = viewModel.allByText()
+            initInputField()
+            viewModel.person.value = Person("", "", 0)
         }
         binding.deleteButton.setOnClickListener {
             val myId = binding.myId.text
             if (!myId.toString().isEmpty()) {
-                val person = viewModel.getById(if (myId.toString().isEmpty()) 0 else myId.toString()?.toInt())
+                val person = viewModel.getById(
+                    if (myId.toString().isEmpty()) 0 else myId.toString()?.toInt()
+                )
                 if (person != null) {
                     viewModel.delete(person)
                     initInputField()
@@ -86,7 +86,8 @@ class MainFragment : Fragment() {
                 }
             }
         }
-        return inflater.inflate(R.layout.fragment_main, container, false)
+
+        return binding.root
     }
 
     private fun initInputField() {

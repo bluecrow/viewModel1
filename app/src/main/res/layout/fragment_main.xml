@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout  xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
+
         <variable
             name="viewmodel"
             type="jp.arkhamsoft.sample.viewmodel1.ui.main.MainViewModel" />
+
         <variable
             name="person"
             type="jp.arkhamsoft.sample.viewmodel1.domain.Person" />
@@ -24,22 +27,23 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <EditText
             android:id="@+id/myId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{person.id_s()}"
             android:hint="id"
+            android:text="@{person.id_s()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView1" />
+            app:layout_constraintTop_toBottomOf="@id/textView1" />
 
         <EditText
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{person.name}"
             android:hint="name"
+            android:text="@{person.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/myId" />
@@ -48,8 +52,8 @@
             android:id="@+id/mail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{person.mail}"
             android:hint="mail"
+            android:text="@{person.mail}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name" />
@@ -58,8 +62,8 @@
             android:id="@+id/age"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@{person.age_s()}"
             android:hint="age"
+            android:text="@{person.age_s()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mail" />
