@@ -1,6 +1,6 @@
 package jp.arkhamsoft.sample.viewmodel1.ui.main
 
-import android.widget.EditText
+
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -16,20 +16,21 @@ class MainViewModel(val dao: PersonDao) : ViewModel() {
 
     fun allByText(): String {
         data = dao.loadAllPerson()
-        var result = ""
-        for (item in data) {
-            result += item.to_s()
-            result += "\n"
-        }
-        return result
+        return data.joinToString(separator = "\n") { item -> item.to_s() }
     }
 
     fun getById(id: Int): Person? = dao.getPersonById(id)
 
     fun add(name: String, mail: String, age: Int) {
-        val person = Person(name, mail, age)
+        val person = makePerson(name, mail, age)
         dao.insertPerson(person)
     }
+
+    private fun makePerson(
+        name: String,
+        mail: String,
+        age: Int
+    ) = Person(name, mail, age)
 
     fun update(person: Person) {
         dao.updatePerson(person)

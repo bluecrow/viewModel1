@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import jp.arkhamsoft.sample.viewmodel1.dao.AppDatabase
 import jp.arkhamsoft.sample.viewmodel1.databinding.FragmentMainBinding
@@ -35,59 +36,70 @@ class MainFragment : Fragment() {
         binding.textView1.text = viewModel.allByText()
         binding.addButton.text = Person.label(0)
 
-        binding.myId.setOnFocusChangeListener { view, b ->
-            if (!b) {
-                try {
-                    val id = binding.myId.text.toString().toInt()
-                    binding.addButton.text = Person.label(id)
-                    val person = viewModel.getById(id)
-                    binding.name.setText(person?.name ?: "")
-                    binding.mail.setText(person?.mail ?: "")
-                    binding.age.setText(person?.age_s() ?: "0")
-                } catch (e: Exception) {
-                    Log.d("MainFragment", "catch Exception")
+        binding.myId.apply {
+            setOnFocusChangeListener { _, b ->
+                if (!b) {
+                    try {
+                        val id = text.toString().toInt()
+                        binding.addButton.text = Person.label(id)
+                        binding.person = viewModel.getById(id) ?: Person("", "", 0)
+                    } catch (e: Exception) {
+                        Log.d("MainFragment", "catch Exception")
+                    }
                 }
             }
         }
 
-        binding.addButton.setOnClickListener {
-            val myId = binding.myId.text
-            val newName = binding.name.text
-            val newMail = binding.mail.text
-            val newAge = binding.age.text
-            if (myId.toString().isEmpty()) {
-                viewModel.add(newName.toString(), newMail.toString(), newAge.toString().toInt())
-            } else {
-                val person = viewModel.getById(
-                    if (myId.toString().isEmpty()) 0 else myId.toString()?.toInt()
-                )
-                if (person != null) {
-                    person.name = newName.toString()
-                    person.mail = newMail.toString()
-                    person.age = newAge.toString().toInt()
-                    viewModel.update(person)
+        binding.addButton.apply {
+            setOnClickListener {
+                val myId = binding.myId.text.toString()
+                val newName = binding.name.text.toString()
+                val newMail = binding.mail.text.toString()
+                val newAge = binding.age.text.toString().toInt()
+                if (myId.isEmpty()) {
+                    //add
+                    viewModel.add(newName, newMail, newAge)
+                } else {
+                    //update
+                    val person = viewModel.getById(if (myId.isEmpty()) 0 else myId.toInt())
+                    if (person != null) {
+                        person.name = newName
+                        person.mail = newMail
+                        person.age = newAge
+                        viewModel.update(person)
+                    } else {
+                        //not found
+                        Toast.makeText(requireContext(), "Id not found", Toast.LENGTH_LONG).show()
+                    }
                 }
+                updateView()
             }
-            binding.textView1.text = viewModel.allByText()
-            initInputField()
-            viewModel.person.value = Person("", "", 0)
         }
-        binding.deleteButton.setOnClickListener {
-            val myId = binding.myId.text
-            if (!myId.toString().isEmpty()) {
-                val person = viewModel.getById(
-                    if (myId.toString().isEmpty()) 0 else myId.toString()?.toInt()
-                )
-                if (person != null) {
-                    viewModel.delete(person)
-                    initInputField()
-                    viewModel.person.value = Person("", "", 0)
-                    binding.textView1.text = viewModel.allByText()
+
+        binding.deleteButton.apply {
+            setOnClickListener {
+                val myId = binding.myId.text.toString()
+                if (myId.isNotEmpty()) {
+                    val person = viewModel.getById(myId.toInt())
+                    if (person != null) {
+                        viewModel.delete(person)
+                    }
                 }
+                updateView()
             }
+        }
+
+        viewModel.person.observe(viewLifecycleOwner) {
+            binding.addButton.text = it.label()
         }
 
         return binding.root
+    }
+
+    private fun updateView() {
+        binding.textView1.text = viewModel.allByText()
+        initInputField()
+        viewModel.person.value = Person("", "", 0)
     }
 
     private fun initInputField() {
@@ -95,19 +107,5 @@ class MainFragment : Fragment() {
         binding.name.setText("")
         binding.mail.setText("")
         binding.age.setText("0")
-        binding.addButton.text = Person.label(0)
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
-    fun getByText(data: Array<Person>): String {
-        var result = ""
-        for (item in data) {
-            result += item.to_s()
-            result += "\n"
-        }
-        return result
     }
 }

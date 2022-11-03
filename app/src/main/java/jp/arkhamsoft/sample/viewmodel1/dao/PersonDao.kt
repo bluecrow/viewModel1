@@ -34,7 +34,7 @@ interface PersonDao {
     fun insertPerson(person: Person)
 
     @Query("SELECT * FROM person WHERE id = :id")
-    fun getPersonById(id: Int): Person
+    fun getPersonById(id: Int): Person?
 
     @Update
     fun updatePerson(person: Person)

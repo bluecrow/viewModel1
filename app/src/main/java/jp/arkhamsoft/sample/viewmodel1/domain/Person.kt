@@ -9,7 +9,8 @@ data class Person(var name: String, var mail: String, var age: Int) {
         fun label(argId: Int): String = if (argId == 0) "Add Person" else "Update Person"
     }
     @PrimaryKey(autoGenerate = true) var id: Int = 0
-    fun id_s(): String = id.toString()
-    fun age_s(): String = age.toString()
+    fun id_s() = if (id == 0) { "" } else { id.toString() }
+    fun age_s() = age.toString()
     fun to_s() = "$id: $name ($mail, $age)"
+    fun label() = label(id)
 }
