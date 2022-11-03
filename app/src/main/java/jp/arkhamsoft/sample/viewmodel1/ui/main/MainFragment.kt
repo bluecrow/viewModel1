@@ -34,15 +34,15 @@ class MainFragment : Fragment() {
         binding.viewmodel = viewModel
 
         binding.textView1.text = viewModel.allByText()
-        binding.addButton.text = Person.label(0)
 
         binding.myId.apply {
             setOnFocusChangeListener { _, b ->
                 if (!b) {
                     try {
                         val id = text.toString().toInt()
-                        binding.addButton.text = Person.label(id)
-                        binding.person = viewModel.getById(id) ?: Person("", "", 0)
+                        val person = viewModel.getById(id) ?: Person("", "", 0)
+                        viewModel.person.postValue(person)
+                        binding.person = person
                     } catch (e: Exception) {
                         Log.d("MainFragment", "${e.message}")
                     }
