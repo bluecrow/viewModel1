@@ -44,7 +44,7 @@ class MainFragment : Fragment() {
                         binding.addButton.text = Person.label(id)
                         binding.person = viewModel.getById(id) ?: Person("", "", 0)
                     } catch (e: Exception) {
-                        Log.d("MainFragment", "catch Exception")
+                        Log.d("MainFragment", "${e.message}")
                     }
                 }
             }
@@ -52,40 +52,51 @@ class MainFragment : Fragment() {
 
         binding.addButton.apply {
             setOnClickListener {
-                val myId = binding.myId.text.toString()
-                val newName = binding.name.text.toString()
-                val newMail = binding.mail.text.toString()
-                val newAge = binding.age.text.toString().toInt()
-                if (myId.isEmpty()) {
-                    //add
-                    viewModel.add(newName, newMail, newAge)
-                } else {
-                    //update
-                    val person = viewModel.getById(if (myId.isEmpty()) 0 else myId.toInt())
-                    if (person != null) {
-                        person.name = newName
-                        person.mail = newMail
-                        person.age = newAge
-                        viewModel.update(person)
+                try {
+                    val myId = binding.myId.text.toString()
+                    val newName = binding.name.text.toString()
+                    val newMail = binding.mail.text.toString()
+                    val newAge = binding.age.text.toString().toInt()
+                    if (myId.isEmpty()) {
+                        //add
+                        viewModel.add(newName, newMail, newAge)
                     } else {
-                        //not found
-                        Toast.makeText(requireContext(), "Id not found", Toast.LENGTH_LONG).show()
+                        //update
+                        val person = viewModel.getById(if (myId.isEmpty()) 0 else myId.toInt())
+                        if (person != null) {
+                            person.name = newName
+                            person.mail = newMail
+                            person.age = newAge
+                            viewModel.update(person)
+                        } else {
+                            //not found
+                            Toast.makeText(requireContext(), "Id not found", Toast.LENGTH_LONG)
+                                .show()
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.d("MainFragment", "${e.message}")
+                } finally {
+                    updateView()
                 }
-                updateView()
             }
         }
 
         binding.deleteButton.apply {
             setOnClickListener {
-                val myId = binding.myId.text.toString()
-                if (myId.isNotEmpty()) {
-                    val person = viewModel.getById(myId.toInt())
-                    if (person != null) {
-                        viewModel.delete(person)
+                try {
+                    val myId = binding.myId.text.toString()
+                    if (myId.isNotEmpty()) {
+                        val person = viewModel.getById(myId.toInt())
+                        if (person != null) {
+                            viewModel.delete(person)
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.d("MainFragment", "${e.message}")
+                } finally {
+                    updateView()
                 }
-                updateView()
             }
         }
 
