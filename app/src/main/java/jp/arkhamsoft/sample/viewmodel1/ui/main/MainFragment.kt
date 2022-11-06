@@ -7,17 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import jp.arkhamsoft.sample.viewmodel1.dao.AppDatabase
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import jp.arkhamsoft.sample.viewmodel1.databinding.FragmentMainBinding
 import jp.arkhamsoft.sample.viewmodel1.domain.Person
+import javax.inject.Inject
 
-class MainFragment : Fragment() {
+@AndroidEntryPoint
+class MainFragment @Inject constructor() : Fragment() {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
-    private lateinit var viewModel: MainViewModel
+    private val viewModel: MainViewModel by viewModels()
     private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(
@@ -25,11 +24,6 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-
-        val db = AppDatabase.getInstance(requireContext())
-
-        viewModel = MainViewModelFactory(db.personDao())
-            .create(MainViewModel::class.java)
 
         binding.viewmodel = viewModel
 

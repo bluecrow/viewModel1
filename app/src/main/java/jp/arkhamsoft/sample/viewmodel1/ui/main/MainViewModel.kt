@@ -3,27 +3,31 @@ package jp.arkhamsoft.sample.viewmodel1.ui.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import jp.arkhamsoft.sample.viewmodel1.dao.PersonDao
+import dagger.hilt.android.lifecycle.HiltViewModel
+import jp.arkhamsoft.sample.viewmodel1.dao.PersonRepository
 import jp.arkhamsoft.sample.viewmodel1.domain.Person
-import java.lang.IllegalArgumentException
+import javax.inject.Inject
 
-class MainViewModel(val dao: PersonDao) : ViewModel() {
-    var data: Array<Person> = dao.loadAllPerson()
+@HiltViewModel
+class MainViewModel @Inject constructor(
+    private val repository: PersonRepository
+) : ViewModel() {
+
+    var data: Array<Person> = repository.loadAllPerson()
     val person: MutableLiveData<Person> by lazy {
         MutableLiveData<Person>()
     }
 
     fun allByText(): String {
-        data = dao.loadAllPerson()
+        data = repository.loadAllPerson()
         return data.joinToString(separator = "\n") { item -> item.to_s() }
     }
 
-    fun getById(id: Int): Person? = dao.getPersonById(id)
+    fun getById(id: Int): Person? = repository.getPersonById(id)
 
     fun add(name: String, mail: String, age: Int) {
         val person = makePerson(name, mail, age)
-        dao.insertPerson(person)
+        repository.insertPerson(person)
     }
 
     private fun makePerson(
@@ -33,19 +37,10 @@ class MainViewModel(val dao: PersonDao) : ViewModel() {
     ) = Person(name, mail, age)
 
     fun update(person: Person) {
-        dao.updatePerson(person)
+        repository.updatePerson(person)
     }
 
     fun delete(person: Person) {
-        dao.deletePerson(person)
-    }
-}
-
-class MainViewModelFactory(private val dataSource: PersonDao): ViewModelProvider.Factory {
-    override fun <T: ViewModel> create(model: Class<T>): T {
-        if (model.isAssignableFrom(MainViewModel::class.java)) {
-            return MainViewModel(dataSource) as T
-        }
-        throw IllegalArgumentException("Can not get viewModel")
+        repository.deletePerson(person)
     }
 }
